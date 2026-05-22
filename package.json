@@ -1,0 +1,50 @@
+{
+  "name": "plugin-standard-files",
+  "version": "2026.5.0",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Standard files (robots.txt, sitemap.xml, RSS/Atom feed, security.txt) plugin for sitespeed.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Webperf-se/plugin-standard-files.git"
+  },
+  "keywords": [
+    "sitespeed.io",
+    "robots.txt",
+    "sitemap",
+    "security.txt",
+    "rss",
+    "standard-files",
+    "webperf",
+    "webperf_core",
+    "webperf-core"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Webperf-se/plugin-standard-files/issues"
+  },
+  "engines": {
+    "node": ">=20.x"
+  },
+  "devDependencies": {
+    "eslint": "10.0.0",
+    "@eslint/js": "10.0.1",
+    "serve": "14.2.5",
+    "serve-handler": "6.1.6"
+  },
+  "dependencies": {
+    "jsdom": "28.1.0",
+    "@sitespeed.io/plugin": "1.0.0"
+  },
+  "scripts": {
+    "start-server": "serve test/data/",
+    "stop-server": "sudo pkill serve",
+    "test": "node --test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "main": "./lib/index.js"
+}

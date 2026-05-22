@@ -1,0 +1,78 @@
+- let pluginData = pageInfo.data['webperf-plugin-standard-files'].run ? pageInfo.data['webperf-plugin-standard-files'].run : pageInfo.data['webperf-plugin-standard-files'].pageSummary
+
+h2 Standard files
+p This plugin checks for the presence and validity of common standard files: robots.txt, sitemap(s), an RSS/Atom feed and security.txt.
+    br
+    span Using plugin-standard-files v#{pluginData.version} 
+    span with dependencies: 
+        each version, name in pluginData.dependencies
+            span #{name} v#{version}, 
+
+if pluginData.knowledgeData && pluginData.knowledgeData.issues && Object.keys(pluginData.knowledgeData.issues).length > 0
+    - let issueSets = pluginData.knowledgeData.issues;
+    - let issues = Object.values(issueSets);
+    - const severityOrder = { critical: 4, error: 3, warning: 2, info: 1, resolved: 0 };
+    - let sortedIssues = issues.sort((a, b) => {
+    -     if (severityOrder[b.severity] !== severityOrder[a.severity]) {
+    -         return severityOrder[b.severity] - severityOrder[a.severity];
+    -     }
+    -     return b.subIssues.length - a.subIssues.length;
+    - });
+
+    h3 Issues
+    table
+        thead
+            tr
+                th Rule
+                th Category
+                th Sub Issue Count
+                th Severity
+        tbody
+            each value in sortedIssues
+                tr
+                    td
+                        a(href=`#rule-${value.rule}`)= value.rule
+                    td= value.category
+                    td= value.subIssues.length
+                    td
+                        if value.severity === 'resolved'
+                            span.label.ok Resolved
+                        else if value.severity === 'warning'
+                            span.label.warning Warning
+                        else if value.severity === 'error'
+                            span.label.error Error
+                        else if value.severity === 'info'
+                            span.label.info Info
+                        else
+                            = value.severity
+
+    // Add tables for each rule
+    each value in sortedIssues
+        h4(id=`rule-${value.rule}`)= `${value.rule}`
+        p 
+            strong Category:
+            = value.category
+            br
+            strong Severity:
+            = value.severity
+
+        - if (value.subIssues.length > 100)
+            p Note: Only the first 100 issues are displayed.
+        if value.subIssues.length > 0
+            table
+                thead
+                    tr
+                        th URL
+                        th Text
+                tbody
+                    - let limitedIssues = value.subIssues.slice(0, 100);
+                    each issue in limitedIssues
+                        tr
+                            td= issue.url
+                            td= issue.text
+else
+    p No issues found.
+
+//- h2 Debug: Plugin Data
+//- pre
+//-     code= JSON.stringify(pluginData, null, 3)
