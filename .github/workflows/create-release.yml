@@ -32,7 +32,7 @@ jobs:
         id: newversion
         run: python tools/release.py -l "${{ steps.changes.outputs.last-tag }}"
       - name: GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: "${{ env.NEW_VERSION }}"
           make_latest: "true"
