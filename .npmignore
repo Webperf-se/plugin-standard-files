@@ -1,0 +1,13 @@
+.mypy_cache/
+.DS_Store
+.editorconfig
+.gitattributes
+.github
+node_modules
+tools
+sitespeed-result
+package-lock.json
+requirements.txt
+tmp
+cache
+NOTES.md
