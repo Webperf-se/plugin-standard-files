@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "jsdom": "28.1.0",
-    "@sitespeed.io/plugin": "1.0.0"
+    "@sitespeed.io/plugin": "1.0.2"
   },
   "scripts": {
     "start-server": "serve test/data/",
