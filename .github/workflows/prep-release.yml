@@ -46,6 +46,5 @@ jobs:
             Changes since ${{ steps.changes.outputs.last-tag }}:
             ${{ steps.changes.outputs.log }}
           assignees: 7h3Rabbit
-          reviewers: 7h3Rabbit
           add-paths: |
             package.json
