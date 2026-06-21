@@ -1,6 +1,6 @@
 {
   "name": "plugin-standard-files",
-  "version": "2026.6.1",
+  "version": "2026.6.2",
   "type": "module",
   "exports": "./lib/index.js",
   "publishConfig": {
