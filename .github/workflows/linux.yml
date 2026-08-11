@@ -38,4 +38,11 @@ jobs:
     - name: Show sitespeed.io version
       run: sitespeed.io --version
     - name: Run tests using plugin
-      run: sitespeed.io --plugins.add ./lib/index.js --browsertime.chrome.includeResponseBodies all --xvfb -n 1 http://127.0.0.1:3000/
+      # test/data/sitemap.xml is served as XML, so Chrome renders it with its
+      # built-in XML viewer instead of a normal page: there's no LCP paint
+      # candidate, which crashes browsertime's LCP screenshot/highlight
+      # script, and no real DOM, which crashes coach-core's iframe-sandbox
+      # privacy check. Both are non-fatal to the actual run (the report still
+      # gets written) but sitespeed.io still exits non-zero, which fails this
+      # step. Skip both checks - neither is relevant to this plugin's output.
+      run: sitespeed.io --plugins.add ./lib/index.js --plugins.remove coach --browsertime.chrome.includeResponseBodies all --browsertime.screenshot false --browsertime.screenshotLCP false --xvfb -n 1 http://127.0.0.1:3000/
