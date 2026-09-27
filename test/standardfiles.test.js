@@ -98,3 +98,29 @@ test('network failure -> only no-network', async () => {
   assert.deepEqual(Object.keys(issues), ['no-network']);
   assert.equal(issues['no-network'].category, 'technical');
 });
+
+test('sitemapindex on other hosts -> not fetched, reported as critical', async () => {
+  const analyzer = new HarAnalyzer();
+  analyzer.getInitialUrls(PAGE, GROUP);
+
+  const index = 'https://example.com/sitemapindex.xml';
+  const own = 'https://www.example.com/sv/sitemap.xml';
+  const foreign = ['https://example.dk/da/sitemap.xml', 'https://other.example.org/sitemap.xml'];
+  const indexXml =
+    '<?xml version="1.0"?><sitemapindex>' +
+    [own, ...foreign].map((u) => `<sitemap><loc>${u}</loc></sitemap>`).join('') +
+    '</sitemapindex>';
+  const robotsTxt = `User-agent: *\nDisallow:\nSitemap: ${index}\n`;
+
+  await analyzer.analyzeData(PAGE, har(PAGE, '<html><body>hi</body></html>', 'text/html'), GROUP);
+  await analyzer.analyzeData(ROBOTS, har(ROBOTS, robotsTxt), GROUP);
+  assert.deepEqual(analyzer.getNextUrls(GROUP), [index]);
+
+  await analyzer.analyzeData(index, har(index, indexXml, 'application/xml'), GROUP);
+  // Only the same-site (www-insensitive) child is queued
+  assert.deepEqual(analyzer.getNextUrls(GROUP), [own]);
+
+  const issue = analyzer.finalize(GROUP).knowledgeData.issues['no-same-host-sitemapindex'];
+  assert.equal(issue.severity, 'critical');
+  assert.deepEqual(issue.subIssues.map((s) => s.text.split(': ')[1]), foreign);
+});
