@@ -27,7 +27,7 @@
     "url": "https://github.com/Webperf-se/plugin-standard-files/issues"
   },
   "engines": {
-    "node": ">=20.x"
+    "node": ">=24.15.0"
   },
   "devDependencies": {
     "eslint": "10.12.0",
