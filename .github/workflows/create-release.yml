@@ -7,6 +7,15 @@ on:
       - main
     paths:
       - "package.json"
+permissions:
+  contents: read
+
+# Queue runs instead of running them side by side, so a push and a manual
+# run right after it can't both release the same version.
+concurrency:
+  group: create-release
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,13 +42,20 @@ jobs:
       - name: Generate new release version
         id: newversion
         run: python tools/release.py -l "${{ steps.changes.outputs.last-tag }}"
+      # NEW_VERSION stays empty when package.json does not hold the next
+      # version (any other change to package.json on main).
+      - name: Stop when there is no new version
+        if: env.NEW_VERSION == ''
+        run: echo "package.json does not hold a new version, nothing to release."
       - name: GitHub Release
+        if: env.NEW_VERSION != ''
         uses: softprops/action-gh-release@v3
         with:
           tag_name: "${{ env.NEW_VERSION }}"
           make_latest: "true"
           generate_release_notes: true
       - name: NPM Release (version specific)
+        if: env.NEW_VERSION != ''
         uses: JS-DevTools/npm-publish@v4
         with:
           token: ${{ secrets.NPM_TOKEN }}
