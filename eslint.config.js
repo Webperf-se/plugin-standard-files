@@ -10,7 +10,9 @@ export default [
       globals: {
         process: 'readonly',
         console: 'readonly',
-        URL: 'readonly'
+        URL: 'readonly',
+        fetch: 'readonly',
+        AbortSignal: 'readonly'
       }
     },
     rules: {
