@@ -36,9 +36,12 @@ A few things still need a real-world sitespeed.io run to confirm.
    `plugin-accessibility-statement`'s "finalize at summarize" pattern, but I
    want to confirm the standalone HTML tab still renders (the `run`/`pageSummary`
    pug paths).
-3. **Gzipped sitemaps (`.xml.gz`).** Assumed to be transparently decompressed by
-   the browser before reaching the HAR. `sitemapParser.looksLikeXml` bails out
-   gracefully if we ever receive binary; needs a real `.xml.gz` test.
+3. **Gzipped sitemaps (`.xml.gz`).** Resolved: the one exception to "real
+   browser fetches". A `.xml.gz` is normally served as the gzip file itself
+   (`application/x-gzip`, no `Content-Encoding`), which Chrome downloads
+   instead of loading, so browsertime retried for minutes and the sitemap was
+   reported as unreadable. These are now fetched with Node `fetch` and unpacked
+   with `zlib` in `lib/sitemapFetcher.js`, see `HarAnalyzer.dispatchNextUrls`.
 4. **Locale strings.** The issue text shown by `webperf_core` comes from its own
    translation files keyed by the test name (`standard-files`). We will need to
    add those keys in webperf_core (or a `locale/` folder if the plugin owns
