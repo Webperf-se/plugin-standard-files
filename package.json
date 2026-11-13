@@ -32,7 +32,7 @@
   "devDependencies": {
     "eslint": "10.14.0",
     "@eslint/js": "10.0.1",
-    "serve": "14.2.6",
+    "serve": "14.2.7",
     "serve-handler": "6.1.7"
   },
   "dependencies": {
